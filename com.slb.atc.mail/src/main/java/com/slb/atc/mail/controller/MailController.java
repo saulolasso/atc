@@ -1,8 +1,8 @@
 package com.slb.atc.mail.controller;
 
 import com.slb.atc.mail.dto.ErrorMessageDto;
-import com.slb.atc.subscription.dto.SubscriptionDto;
 import com.slb.atc.mail.service.MailService;
+import com.slb.atc.subscription.dto.SubscriptionDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +52,7 @@ public class MailController {
       })
   public ResponseEntity<?> sendSubscriptionCreatedNotification(
       @Valid @RequestBody SubscriptionDto subscriptionDto) {
-        subscriptionService.sendSubscriptionCreatedNotification(subscriptionDto);
+    subscriptionService.sendSubscriptionCreatedNotification(subscriptionDto);
     return new ResponseEntity(HttpStatus.OK);
   }
 
@@ -83,7 +82,7 @@ public class MailController {
       })
   public ResponseEntity<?> sendSubscriptionCancelledNotification(
       @Valid @RequestBody SubscriptionDto subscriptionDto) {
-        subscriptionService.sendSubscriptionCancelledNotification(subscriptionDto);
+    subscriptionService.sendSubscriptionCancelledNotification(subscriptionDto);
     return new ResponseEntity(HttpStatus.OK);
   }
 }

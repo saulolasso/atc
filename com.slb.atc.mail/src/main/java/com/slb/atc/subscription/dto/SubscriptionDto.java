@@ -5,9 +5,13 @@ import java.util.Date;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubscriptionDto {
 
   private Long id;
@@ -20,9 +24,9 @@ public class SubscriptionDto {
 
   @NotNull private Date dateOfBirth;
 
+  @NotNull private Boolean flagForConsent;
+
   @NotNull private Long newsletterId;
 
-  @NotNull private boolean cancelled;
-
-  public SubscriptionDto() {}
+  @NotNull private Boolean cancelled;
 }
