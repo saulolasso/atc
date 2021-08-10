@@ -7,7 +7,6 @@ import com.slb.atc.subscription.error.NotFoundException;
 import com.slb.atc.subscription.repository.SubscriptionRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,22 +34,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptions.stream()
             .map(subscription -> getModelMapper().map(subscription, SubscriptionDto.class))
             .collect(Collectors.toList());
+    if (subscriptionDtos.isEmpty()) {
+      throw new NotFoundException("There aren't any subscriptions with email " + email + ".");
+    }
     return subscriptionDtos;
   }
 
-	// FIXME: It appears not to be catching the EntityNotFoundException
-	//  which in return causes a HTTP 500 response instead of the HTTP 404 expected
   @Override
   public SubscriptionDto getById(long id) {
-    try {
-      Subscription subscription = subscriptionRepository.getById(id);
-      return getModelMapper().map(subscription, SubscriptionDto.class);
-    } catch (EntityNotFoundException ex) {
-      throw new NotFoundException("Subscription with id " + id + " doesn't exist.");
-    }
+    Subscription subscription =
+        subscriptionRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new NotFoundException("Subscription with id " + id + " doesn't exist."));
+    return getModelMapper().map(subscription, SubscriptionDto.class);
   }
 
-  // FIXME: Http Response not showing error message
   @Override
   @Transactional(rollbackFor = {KafkaException.class})
   public SubscriptionDto create(SubscriptionDto subscriptionDto) {
@@ -63,29 +62,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
       throw new BadRequestException(
           "Email "
               + subscriptionDto.getEmail()
-              + "is alredy subscribed to newsletter with id "
-              + subscriptionDto.getNewsletterId());
+              + "is already subscribed to newsletter with id "
+              + subscriptionDto.getNewsletterId()
+              + ".");
     }
   }
 
-  // FIXME: It appears not to be catching the EntityNotFoundException
-	//  which in return causes a HTTP 500 response instead of the HTTP 404 expected
-	@Override
+  @Override
   @Transactional(rollbackFor = {KafkaException.class})
   public void cancel(long id) {
-    try {
-      Subscription subscription = subscriptionRepository.getById(id);
-      if (subscription.isCancelled()) {
-        throw new BadRequestException("Subscription with id " + id + " is already cancelled.");
-      } else {
-        subscription.setCancelled(true);
-        subscriptionRepository.save(subscription);
-        kafkaTemplate.send(
-            "sendSubscriptionCreatedNotification",
-            getModelMapper().map(subscription, SubscriptionDto.class));
-      }
-    } catch (EntityNotFoundException ex) {
-      throw new NotFoundException("Subscription with id " + id + " doesn't exist.");
+    Subscription subscription =
+        subscriptionRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new NotFoundException("Subscription with id " + id + " doesn't exist."));
+    if (subscription.getCancelled()) {
+      throw new BadRequestException("Subscription with id " + id + " is already cancelled.");
+    } else {
+      subscription.setCancelled(true);
+      subscriptionRepository.save(subscription);
+      kafkaTemplate.send(
+          "sendSubscriptionCreatedNotification",
+          getModelMapper().map(subscription, SubscriptionDto.class));
     }
   }
 }

@@ -13,11 +13,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "newsletterId"}))
 public class Subscription {
 
@@ -36,7 +41,9 @@ public class Subscription {
   @Temporal(TIMESTAMP)
   private Date dateOfBirth;
 
+  @NotNull @AssertTrue private Boolean flagForConsent;
+
   @NotNull private Long newsletterId;
 
-  @NotNull private boolean cancelled;
+  @NotNull private Boolean cancelled;
 }

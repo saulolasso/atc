@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     errorMessageDto.setTimestamp(new Date());
     List<String> errors = new ArrayList<>();
     errors.add(ex.getMessage());
+    errorMessageDto.setErrors(errors);
     return new ResponseEntity<>(errorMessageDto, HttpStatus.NOT_FOUND);
   }
 
@@ -46,6 +48,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     errorMessageDto.setTimestamp(new Date());
     List<String> errors = new ArrayList<>();
     errors.add(ex.getMessage());
+    errorMessageDto.setErrors(errors);
+    return new ResponseEntity<>(errorMessageDto, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<Object> handleConstraintViolationException(
+      ConstraintViolationException ex, WebRequest request) {
+    ErrorMessageDto errorMessageDto = new ErrorMessageDto();
+    errorMessageDto.setTimestamp(new Date());
+    List<String> errors = new ArrayList<>();
+    errors.add(ex.getMessage());
+    errorMessageDto.setErrors(errors);
     return new ResponseEntity<>(errorMessageDto, HttpStatus.BAD_REQUEST);
   }
 }

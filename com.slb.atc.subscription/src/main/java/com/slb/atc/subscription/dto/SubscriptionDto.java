@@ -2,12 +2,17 @@ package com.slb.atc.subscription.dto;
 
 import com.slb.atc.subscription.enums.Gender;
 import java.util.Date;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubscriptionDto {
 
   private Long id;
@@ -20,9 +25,9 @@ public class SubscriptionDto {
 
   @NotNull private Date dateOfBirth;
 
+  @NotNull @AssertTrue private Boolean flagForConsent;
+
   @NotNull private Long newsletterId;
 
-  @NotNull private boolean cancelled;
-
-  public SubscriptionDto() {}
+  @NotNull private Boolean cancelled;
 }

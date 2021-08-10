@@ -89,12 +89,12 @@ public class SubscriptionController {
             })
       })
   public ResponseEntity<List<SubscriptionDto>> listByEmail(
-      @Valid @PathVariable("email") @NotBlank @Email String email) {
+      @PathVariable("email") @NotBlank @Email String email) {
     List<SubscriptionDto> subscriptionDtos = subscriptionService.listByEmail(email);
     return new ResponseEntity(subscriptionDtos, HttpStatus.OK);
   }
 
-  @PostMapping(value = "/create")
+  @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
       operationId = "create",
       summary = "Create subscription",
@@ -111,7 +111,7 @@ public class SubscriptionController {
             }),
         @ApiResponse(
             responseCode = "400",
-            description = "Bad Request: Invalid subscription data",
+            description = "Bad Request: Invalid subscription data or flagForConsent false",
             content = {
               @Content(
                   mediaType = "application/json",
@@ -127,12 +127,15 @@ public class SubscriptionController {
             })
       })
   public ResponseEntity<?> create(@Valid @RequestBody SubscriptionDto subscriptionDto) {
+    //		if (!subscriptionDto.getFlagForConsent()) {
+    //			throw new BadRequestException("Only requests with fieldFlagForConsent are accepted.");
+    //		}
     SubscriptionDto subscriptionDtoWithId = subscriptionService.create(subscriptionDto);
     return new ResponseEntity(subscriptionDtoWithId, HttpStatus.CREATED);
   }
 
   // TODO: Consider using PUT instead of GET
-  @GetMapping(value = "/cancel/{id}")
+  @GetMapping(value = "/cancel/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(
       operationId = "cancel",
       summary = "Cancel subscription",
