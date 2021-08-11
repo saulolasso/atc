@@ -1,0 +1,22 @@
+server:
+  error:
+    include-message: always
+  port: 9003
+spring:
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      group-id: group-id
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+springdoc:
+  packagesToScan: com.slb.atc.mail.controller
+  pathsToMatch: /**
+  swagger-ui:
+    disable-swagger-default-url: true
