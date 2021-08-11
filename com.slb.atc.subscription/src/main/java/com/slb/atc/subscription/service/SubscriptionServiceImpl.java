@@ -55,9 +55,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   public SubscriptionDto create(SubscriptionDto subscriptionDto) {
     try {
       Subscription subscription = getModelMapper().map(subscriptionDto, Subscription.class);
-      subscription = subscriptionRepository.saveAndFlush(subscription);
-      kafkaTemplate.send("sendSubscriptionCreatedNotification", subscriptionDto);
-      return getModelMapper().map(subscription, SubscriptionDto.class);
+      Subscription subscriptionWithId = subscriptionRepository.saveAndFlush(subscription);
+      SubscriptionDto subscriptionDtoWithId =
+          getModelMapper().map(subscriptionWithId, SubscriptionDto.class);
+      kafkaTemplate.send("sendSubscriptionCreatedNotification", subscriptionDtoWithId);
+      return subscriptionDtoWithId;
     } catch (DataIntegrityViolationException ex) {
       throw new BadRequestException(
           "Email "
@@ -82,7 +84,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
       subscription.setCancelled(true);
       subscriptionRepository.save(subscription);
       kafkaTemplate.send(
-          "sendSubscriptionCreatedNotification",
+          "sendSubscriptionCancelledNotification",
           getModelMapper().map(subscription, SubscriptionDto.class));
     }
   }

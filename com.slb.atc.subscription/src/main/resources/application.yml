@@ -1,0 +1,49 @@
+server:
+  error:
+    include-message: always
+  port: 9002
+# TODO: Work in progress, trying to set up mTLS between Gateway Service and Subscribe service
+#  ssl:
+#    enabled: true
+#    client-auth: need
+#    key-store: classpath:subscription.p12
+#    key-store-password: password
+#    key-alias: subscription
+#    key-store-type: PKCS12
+#    trust-store: classpath:subscription.p12
+#    trust-store-password: password
+#    trust-store-type: PKCS12
+  tomcat:
+    accesslog:
+      enabled: true
+logging:
+  level:
+    org.springframework.security: DEBUG
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/atc_subscription?useSSL=false&serverTimezone=UTC&useLegacyDateTimeCode=false&allowPublicKeyRetrieval=true
+    password: atc_subscription
+    username: atc_subscription
+  jpa:
+    # TODO: disable ddl-auto: update for a production environment
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties[delivery.timeout.ms]: 6000
+      properties[linger.ms]: 1000
+      properties[max.block.ms]: 6000
+      properties[request.timeout.ms]: 1000
+      properties[transaction.timeout.ms]: 6000
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+springdoc:
+  packagesToScan: com.slb.atc.subscription.controller
+  pathsToMatch: /**
+  swagger-ui:
+    disable-swagger-default-url: true

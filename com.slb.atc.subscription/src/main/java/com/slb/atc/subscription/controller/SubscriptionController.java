@@ -127,9 +127,6 @@ public class SubscriptionController {
             })
       })
   public ResponseEntity<?> create(@Valid @RequestBody SubscriptionDto subscriptionDto) {
-    //		if (!subscriptionDto.getFlagForConsent()) {
-    //			throw new BadRequestException("Only requests with fieldFlagForConsent are accepted.");
-    //		}
     SubscriptionDto subscriptionDtoWithId = subscriptionService.create(subscriptionDto);
     return new ResponseEntity(subscriptionDtoWithId, HttpStatus.CREATED);
   }
