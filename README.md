@@ -110,7 +110,7 @@ Create Maven wrapper, generate image and run
 ```sh
 $ mvn -N io.takari:maven:wrapper
 $ ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=atc-subscription/atc-subscription-docker
-$ docker run -p 9002:9002 -t atc-mail/atc-subscription-docker
+$ docker run -p 9002:9002 -t atc-subscription/atc-subscription-docker
 ```
 To verify, open in browser:
 http://localhost:9002/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
@@ -124,7 +124,7 @@ Create Maven wrapper, generate image and run
 ```sh
 $ mvn -N io.takari:maven:wrapper
 $ ./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=atc-gateway/atc-gateway-docker
-$ docker run -p 9002:9002 -t atc-mail/atc-gateway-docker
+$ docker run -p 9000:9000 -t atc-gateway/atc-gateway-docker
 ```
 To verify, open Postman or a similar client tool and send a GET request to:
 http://localhost:9000/subscription/getById/1
