@@ -65,7 +65,10 @@ Create the database, create a user and grant permissions:
 ```sh
 $ CREATE DATABASE atc_subscription;
 $ CREATE USER 'atc_subscription'@'localhost' IDENTIFIED BY 'atc_subscription';
-$ GRANT ALL PRIVILEGES ON atc_subscription.* TO 'atc_subscription'@'localhost';
+$ GRANT ALL PRIVILEGES ON *.* TO 'atc_subscription'@'localhost' WITH GRANT OPTION;
+$ CREATE USER 'atc_subscription'@'%' IDENTIFIED BY 'atc_subscription';
+$ GRANT ALL PRIVILEGES ON *.* TO 'atc_subscription'@'%' WITH GRANT OPTION;
+$ FLUSH PRIVILEGES;
 ```
 Note: In a production environment only the minimum privileges should be granted.
 #### Containers 2 and 3: Apache Zookeeper and Apache Kafka
